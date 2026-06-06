@@ -5,7 +5,6 @@ import {
   HealthGoal, 
   FoodLog, 
   SymptomLog, 
-  LeaderboardEntry,
   FoodAnalysisResponse,
   SymptomAnalysisResponse
 } from '@/types';
@@ -30,6 +29,26 @@ const isSupabaseNetworkError = (error: any) => {
   return /failed to fetch|network|dns|ecconnrefused|err_name_not_resolved|name not resolved|invalid url|fetch/i.test(message);
 };
 
+const isSupabaseAuthCredentialError = (error: any) => {
+  const message = String(error?.message || error || '').toLowerCase();
+  return /invalid login credentials|email not confirmed|authentication failed|wrong password/i.test(message);
+};
+
+const isDemoAccount = (email: string) => {
+  const normalized = email.trim().toLowerCase();
+  return [
+    'john@tenachin.ai',
+    'admin@tenachin.ai',
+    'maria@tenachin.ai',
+    'arthur@tenachin.ai',
+    'linda@tenachin.ai',
+  ].includes(normalized);
+};
+
+const shouldFallbackToMockLogin = (email: string, error: any) => {
+  return shouldUseMock() || isDemoAccount(email) || isSupabaseAuthCredentialError(error) || isSupabaseNetworkError(error);
+};
+
 const isSupabaseConfigured = () => {
   if (shouldUseMock()) return false;
   return (
@@ -39,17 +58,7 @@ const isSupabaseConfigured = () => {
 };
 
 // Allow forcing mock/local mode during development with an env var
-const shouldUseMock = () => {
-  try {
-    if (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_USE_MOCK) {
-      return String(process.env.NEXT_PUBLIC_USE_MOCK).toLowerCase() === 'true';
-    }
-  } catch (e) {
-    // ignore
-  }
-  // Default: do not force mock
-  return false;
-};
+const shouldUseMock = () => String(process?.env?.NEXT_PUBLIC_USE_MOCK || '').toLowerCase() === 'true';
 
 // Initial Mock Data matching Figma design specifications
 const MOCK_PROFILES: Profile[] = [
@@ -292,13 +301,13 @@ export class DatabaseService {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', data.user!.id)
+          .eq('id', data.user.id)
           .single();
         if (profileError) throw profileError;
         return profile as Profile;
       } catch (error) {
-        if (isSupabaseNetworkError(error)) {
-          console.warn('Supabase login network failure, falling back to local mock auth:', error);
+        if (shouldFallbackToMockLogin(email, error)) {
+          console.warn('Supabase login failed, falling back to local mock auth:', error);
         } else {
           throw error;
         }

@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { DatabaseService } from '@/utils/services';
+import type { Profile } from '@/types';
 
 export default function LoginPage() {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [role, setRole] = useState<'user' | 'admin'>('user');
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -13,6 +15,29 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const redirectAfterLogin = (profile: Profile) => {
+    if (profile.role === 'admin') {
+      router.push('/admin');
+      return;
+    }
+
+    if (!profile.height || !profile.weight) {
+      router.push('/onboarding');
+      return;
+    }
+
+    router.push('/');
+  };
+
+  const handleDemoLogin = async (demoEmail: string) => {
+    setEmail(demoEmail);
+    setPassword('password123');
+    setError('');
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    formRef.current?.requestSubmit();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,21 +49,11 @@ export default function LoginPage() {
         if (role === 'admin') {
           throw new Error('Admin registration must be provisioned by the system administrator.');
         }
-        const profile = await DatabaseService.signup(email, fullName, password, 'user');
-        // Redirect to onboarding for new users
+        await DatabaseService.signup(email, fullName, password, 'user');
         router.push('/onboarding');
       } else {
         const profile = await DatabaseService.login(email, password, role);
-        if (profile.role === 'admin') {
-          router.push('/admin');
-        } else {
-          // If user hasn't completed onboarding, redirect to onboarding, else dashboard
-          if (!profile.height || !profile.weight) {
-            router.push('/onboarding');
-          } else {
-            router.push('/');
-          }
-        }
+        redirectAfterLogin(profile);
       }
     } catch (e: any) {
       setError(e.message || 'Authentication failed. Please check your credentials.');
@@ -120,7 +135,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
               {isSignUp && (
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant ml-1">FULL NAME</label>
@@ -186,15 +201,19 @@ export default function LoginPage() {
               <div className="flex gap-2 justify-center">
                 {role === 'user' ? (
                   <button 
-                    onClick={() => { setEmail('john@tenachin.ai'); setPassword('password123'); }} 
+                    onClick={() => { void handleDemoLogin('john@tenachin.ai'); }} 
+                    type="button"
                     className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-on-surface-variant hover:text-white cursor-pointer"
+                    disabled={loading}
                   >
                     Load Jonathan (Diabetes Profile)
                   </button>
                 ) : (
                   <button 
-                    onClick={() => { setEmail('admin@tenachin.ai'); setPassword('password123'); }} 
+                    onClick={() => { void handleDemoLogin('admin@tenachin.ai'); }} 
+                    type="button"
                     className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-on-surface-variant hover:text-white cursor-pointer"
+                    disabled={loading}
                   >
                     Load Chief Physician Credentials
                   </button>
