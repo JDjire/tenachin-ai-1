@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenachin AI | Weekly Health Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#263143",
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-container": "#1a211d",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "surface-dim": "#0e1511",
+                        "inverse-primary": "#006c49",
+                        "on-error-container": "#ffdad6",
+                        "surface-variant": "#2f3632",
+                        "surface-container-highest": "#2f3632",
+                        "outline-variant": "#3c4a42",
+                        "on-tertiary-container": "#711419",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-primary-fixed": "#002113",
+                        "on-primary": "#003824",
+                        "on-background": "#dde4dd",
+                        "on-primary-container": "#00422b",
+                        "tertiary-fixed": "#ffdad7",
+                        "error-container": "#93000a",
+                        "on-surface": "#dde4dd",
+                        "secondary": "#bcc7de",
+                        "background": "#0e1511",
+                        "tertiary-container": "#fc7c78",
+                        "surface-tint": "#4edea3",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-container-high": "#242c27",
+                        "primary-fixed-dim": "#4edea3",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "inverse-on-surface": "#2b322d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#410005",
+                        "surface": "#0e1511",
+                        "surface-container-lowest": "#09100c",
+                        "secondary-container": "#3e495d",
+                        "primary": "#4edea3",
+                        "surface-bright": "#343b36",
+                        "tertiary": "#ffb3af",
+                        "inverse-surface": "#dde4dd",
+                        "outline": "#86948a",
+                        "primary-container": "#10b981",
+                        "on-secondary-container": "#aeb9d0",
+                        "surface-container-low": "#161d19",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-surface-variant": "#bbcabf",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "on-tertiary-fixed-variant": "#842225",
+                        "on-tertiary": "#650911",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base-unit": "4px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "40px",
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "mono-data": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "mono-data": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .vitals-glow-emerald {
+            box-shadow: 0 0 16px rgba(78, 222, 163, 0.15);
+        }
+        .vitals-glow-amber {
+            box-shadow: 0 0 16px rgba(252, 124, 120, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-white/10 shadow-sm flex justify-between items-center px-lg h-16">
+<div class="flex items-center gap-md">
+<span class="font-headline-lg text-primary tracking-tight">Tenachin AI</span>
+</div>
+<div class="flex items-center gap-lg">
+<div class="hidden md:flex items-center gap-md">
+<span class="text-on-surface-variant font-medium hover:text-primary-container transition-colors cursor-pointer">Explore</span>
+<span class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer">Analytics</span>
+<span class="text-on-surface-variant font-medium hover:text-primary-container transition-colors cursor-pointer">Clinical</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:scale-95 transition-transform" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 hidden md:flex flex-col bg-surface-container/60 backdrop-blur-2xl border-r border-white/10 shadow-xl py-md gap-sm z-40">
+<div class="px-md mb-xl mt-16">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<div>
+<p class="font-title-md text-primary font-bold">Tenachin AI</p>
+<p class="font-body-sm text-on-surface-variant text-[10px] uppercase tracking-widest">Clinical Intelligence</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-body-sm">Food Scanner</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container/20 text-primary border-r-4 border-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" data-weight="fill" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-body-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="emergency_share">emergency_share</span>
+<span class="font-body-sm">Emergency</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="admin_panel_settings">admin_panel_settings</span>
+<span class="font-body-sm">Clinical Center</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-md flex flex-col gap-xs">
+<button class="bg-primary text-on-primary font-bold py-md px-md rounded-xl flex items-center justify-center gap-sm active:scale-95 transition-transform mb-md">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+                Emergency Triage
+            </button>
+<a class="flex items-center gap-md py-sm text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-sm">Help</span>
+</a>
+<a class="flex items-center gap-md py-sm text-on-surface-variant hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:pl-64 pt-16 pb-24 md:pb-lg">
+<div class="max-w-[1440px] mx-auto p-md md:p-xl flex flex-col gap-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-on-surface">7-Day Health and Compliance Ledger</h1>
+<p class="text-on-surface-variant font-body-sm mt-xs">Deep clinical audit of nutritional intake vs biometric response.</p>
+</div>
+<div class="flex gap-sm">
+<div class="glass-card px-md py-sm rounded-lg flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(78,222,163,0.6)]"></span>
+<span class="font-label-caps text-on-surface">Compliance: 84%</span>
+</div>
+<div class="glass-card px-md py-sm rounded-lg flex items-center gap-sm">
+<span class="w-3 h-3 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(252,124,120,0.6)]"></span>
+<span class="font-label-caps text-on-surface">Glucose Delta: +12%</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid: Main Chart & High-Level Data -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Multi-line Chart Area -->
+<div class="lg:col-span-9 glass-card rounded-xl p-lg flex flex-col gap-lg relative overflow-hidden">
+<div class="flex justify-between items-center">
+<h3 class="font-title-md text-on-surface">Comparative Performance: Calories &amp; Glucose</h3>
+<div class="flex gap-md">
+<div class="flex items-center gap-xs">
+<span class="w-8 h-[2px] bg-primary"></span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-tighter">Actual Intake</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-8 h-[2px] border-t border-dashed border-outline"></span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-tighter">Clinical Target</span>
+</div>
+</div>
+</div>
+<!-- SVG Chart Visualization -->
+<div class="h-64 w-full relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 200">
+<!-- Grid Lines -->
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+<!-- Target Line (Dashed) -->
+<path d="M0 100 Q 200 100, 400 100 T 800 100" fill="none" opacity="0.5" stroke="#86948a" stroke-dasharray="4 4" stroke-width="2"></path>
+<!-- Actual Intake Line (Emerald) -->
+<path class="drop-shadow-[0_0_8px_rgba(78,222,163,0.4)]" d="M0 120 L 133 110 L 266 130 L 400 60 L 533 115 L 666 90 L 800 105" fill="none" stroke="#4edea3" stroke-width="3"></path>
+<!-- Thursday Spike Marker -->
+<circle class="animate-pulse" cx="400" cy="60" fill="#fc7c78" r="6"></circle>
+<line stroke="#fc7c78" stroke-dasharray="2 2" stroke-width="1" x1="400" x2="400" y1="60" y2="20"></line>
+</svg>
+<!-- Data Marker Label -->
+<div class="absolute top-2 left-[50%] -translate-x-1/2 glass-card border-tertiary-container/30 px-md py-xs rounded-lg vitals-glow-amber">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-tertiary-container text-sm" data-icon="warning">warning</span>
+<span class="font-mono-data text-xs text-on-surface">Thursday: High sugar intake from local snack</span>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between mt-4 px-2">
+<span class="font-label-caps text-on-surface-variant">Mon</span>
+<span class="font-label-caps text-on-surface-variant">Tue</span>
+<span class="font-label-caps text-on-surface-variant">Wed</span>
+<span class="font-label-caps text-primary font-bold">Thu</span>
+<span class="font-label-caps text-on-surface-variant">Fri</span>
+<span class="font-label-caps text-on-surface-variant">Sat</span>
+<span class="font-label-caps text-on-surface-variant">Sun</span>
+</div>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="lg:col-span-3 flex flex-col gap-lg">
+<div class="glass-card rounded-xl p-md flex flex-col gap-sm flex-1">
+<span class="font-label-caps text-on-surface-variant">Avg. Daily Calories</span>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-primary">2,140</span>
+<span class="font-body-sm text-on-surface-variant">kcal</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[92%]"></div>
+</div>
+<p class="text-[10px] text-primary/80 font-medium">92% of weekly target achieved</p>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col gap-sm flex-1">
+<span class="font-label-caps text-on-surface-variant">Glucose Stability</span>
+<div class="flex items-baseline gap-sm">
+<span class="font-display-lg text-tertiary-container">SD 14.2</span>
+<span class="font-body-sm text-on-surface-variant">mg/dL</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full w-[65%]"></div>
+</div>
+<p class="text-[10px] text-tertiary-container/80 font-medium">Variability above safe clinical range</p>
+</div>
+</div>
+</div>
+<!-- Bottom Insight Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Success Metrics Card -->
+<div class="glass-card rounded-xl p-lg border-primary/20 vitals-glow-emerald">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Success Metrics</h4>
+<p class="text-on-surface-variant text-xs">High-compliance nutritional milestones</p>
+</div>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center p-md bg-white/5 rounded-lg border border-white/5">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A top-down professional food photography shot of a vibrant, healthy Mediterranean grain bowl with fresh greens, feta cheese, and grilled proteins. The lighting is cinematic and warm, emphasizing the textures and colors of the healthy ingredients against a dark, slate-textured background to maintain a high-end clinical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS68M54GUtI3PexGFm42HMEQu_BrbtKsXzvareFVlcbOlA0DChyD8bGTzfe4SrBNWKeDGfyenHhX0Gc28Bi_qWsorZK-C8HaMk9dMnpe9c00ZEHpfj1iGZVKJTpTMCNNBqMvAiJ8aq4nMP1syoSk0dRsiT29Ts7g9qrJIhddnsPCQ9b7AUoyDy3A6F5ihn27Mu1K7ATVHUQK20-h1W7MV1JWRRK9CRX0OYG6cUBWR5-fZ5_KO_9uG6IbFQvIsUkMxfvbu5MWx__a2-"/>
+<div>
+<p class="font-body-sm font-bold text-on-surface">Quinoa &amp; Roasted Veg</p>
+<p class="text-[10px] text-primary">Zero glycemic spike recorded</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex justify-between items-center p-md bg-white/5 rounded-lg border border-white/5">
+<div class="flex items-center gap-md">
+<img class="w-10 h-10 rounded-lg object-cover" data-alt="A macro close-up of a deep green spinach and kale smoothie in a clear glass, with professional studio lighting highlighting the smooth texture and vibrant emerald hue. The background is dark and out of focus, creating a sleek, medical-grade tech-forward feel that emphasizes pure nutrition and health." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_Yvmhu8wExJQP7nxJPx6x5N8LmZYvfIQp0cpXuZ7rAe8ElNyMA9L5HU9ys5X_gLNaBU4UGUvPuHfmtQOJ2b1DBnNBVN0BiyugViR0bBFNAhBNh0Lo2QG2nw4tPdpHeIvXik-xkLPTtKtk6YdR2Y5OKvTiORwntygU1aWjuyJBbbPjORhuIDKgzRG7OfeYHa6YuABaRJWuFZ6lEcSqZb5qF38r3ySWLzQhMcCGWeWaxPW1l6BunQJwiWP6AbwvyhLBv7y2l9PCr1mG"/>
+<div>
+<p class="font-body-sm font-bold text-on-surface">Morning Vitality Shake</p>
+<p class="text-[10px] text-primary">Consistent fiber-target match</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Learning Curve Log Card -->
+<div class="glass-card rounded-xl p-lg border-tertiary-container/20 vitals-glow-amber">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="psychology">psychology</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Learning Curve Log</h4>
+<p class="text-on-surface-variant text-xs">Environmental &amp; biological triggers</p>
+</div>
+</div>
+<div class="space-y-md">
+<div class="p-md bg-white/5 rounded-lg border border-white/5 border-l-4 border-l-tertiary-container">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-body-sm font-bold text-on-surface">The "Thursday Slump"</p>
+<p class="text-[10px] text-on-surface-variant mt-1">High-stress meeting @ 3:00 PM triggered craving for processed snacks.</p>
+</div>
+<span class="bg-tertiary-container/10 text-tertiary-container text-[10px] font-bold px-2 py-1 rounded">TRIGGER</span>
+</div>
+</div>
+<div class="p-md bg-white/5 rounded-lg border border-white/5 border-l-4 border-l-tertiary-container">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-body-sm font-bold text-on-surface">Late Night Insomnia</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Elevated cortisol levels correlate with midnight sodium intake.</p>
+</div>
+<span class="bg-tertiary-container/10 text-tertiary-container text-[10px] font-bold px-2 py-1 rounded">CORRELATION</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 w-full md:hidden rounded-t-xl bg-background/80 backdrop-blur-lg border-t border-white/10 shadow-[0_-4px_12px_rgba(0,0,0,0.5)] flex justify-around items-center h-16 pb-safe z-50">
+<div class="flex flex-col items-center justify-center text-on-secondary-container gap-1">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-[10px]">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container gap-1">
+<span class="material-symbols-outlined" data-icon="camera">camera</span>
+<span class="font-label-caps text-[10px]">Scanner</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary gap-1">
+<span class="material-symbols-outlined" data-icon="analytics" data-weight="fill" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-caps text-[10px]">Analytics</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-secondary-container gap-1">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-label-caps text-[10px]">Admin</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for chart pulsing
+        const markers = document.querySelectorAll('.animate-pulse');
+        setInterval(() => {
+            markers.forEach(m => {
+                m.style.opacity = m.style.opacity === '0.5' ? '1' : '0.5';
+            });
+        }, 1500);
+    </script>
+</body></html>
