@@ -1,15 +1,29 @@
 'use client';
 
-import React, { Suspense } from 'react';
-import ChatbotContent from './chatbot-content';
+import React, { useState, useEffect, useRef } from 'react';
+import { DatabaseService } from '@/utils/services';
+import { Profile, SeverityLevel } from '@/types';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ChatbotPage() {
-  return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-background">Loading chatbot...</div>}>
-      <ChatbotContent />
-    </Suspense>
-  );
+interface ChatMessage {
+  id: string;
+  sender: 'user' | 'ai';
+  text: string;
+  timestamp: string;
+  severity?: SeverityLevel;
+  condition?: string;
+  needsHospital?: boolean;
 }
+
+export default function ChatbotContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [user, setUser] = useState<Profile | null>(null);
+  const [userDiseases, setUserDiseases] = useState<string[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [emergencyActive, setEmergencyActive] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState<any>({
     name: 'Black Lion Hospital',
     distance: '1.2 km',
@@ -50,7 +64,7 @@ export default function ChatbotPage() {
       }
     }
     loadData();
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });

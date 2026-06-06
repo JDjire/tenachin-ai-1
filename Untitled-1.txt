@@ -1,0 +1,4 @@
+NEXT_PUBLIC_SUPABASE_URL = 'https://tenachin-ai.vercel.app'
+https://tenachin-ai.vercel.app/auth/callback
+✓ Build completed successfully
+Preview URL: https://tenachin-ai-xxx.vercel.app
