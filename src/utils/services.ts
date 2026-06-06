@@ -31,10 +31,24 @@ const isSupabaseNetworkError = (error: any) => {
 };
 
 const isSupabaseConfigured = () => {
+  if (shouldUseMock()) return false;
   return (
     isValidSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
     isValidSupabaseAnonKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
   );
+};
+
+// Allow forcing mock/local mode during development with an env var
+const shouldUseMock = () => {
+  try {
+    if (typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_USE_MOCK) {
+      return String(process.env.NEXT_PUBLIC_USE_MOCK).toLowerCase() === 'true';
+    }
+  } catch (e) {
+    // ignore
+  }
+  // Default: do not force mock
+  return false;
 };
 
 // Initial Mock Data matching Figma design specifications

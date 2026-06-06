@@ -215,3 +215,36 @@ If deployment fails:
 2. Verify all environment variables are set
 3. Ensure Supabase project is active
 4. Test locally with `npm run dev` first
+
+---
+
+## CI / CD Automation (GitHub)
+
+This repository includes two GitHub Actions workflows to automate deployment and database migrations when you push to `master`:
+
+- `.github/workflows/vercel-deploy.yml` — Deploys the app to Vercel using the Vercel Action. Requires these **repository secrets** to be set in GitHub:
+   - `VERCEL_TOKEN` — a personal token generated in Vercel (Account Settings → Tokens)
+   - `VERCEL_ORG_ID` — your Vercel organization ID
+   - `VERCEL_PROJECT_ID` — the Vercel project ID for this repo
+
+- `.github/workflows/supabase-migrate.yml` — Runs Supabase CLI to push migrations. Requires these **repository secrets**:
+   - `SUPABASE_URL` — your Supabase project reference (project ref)
+   - `SUPABASE_SERVICE_ROLE_KEY` — the service role key (keep secret)
+
+How to set GitHub secrets:
+1. Go to your GitHub repository → Settings → Secrets and variables → Actions → New repository secret
+2. Add each secret above with the exact names
+
+Important: These workflows will only run after you push the changes to GitHub. To push now:
+
+```bash
+git add .
+git commit -m "chore(ci): add Vercel and Supabase deployment workflows"
+git push origin master
+```
+
+After push:
+1. The Vercel workflow will trigger and deploy the app (if `VERCEL_*` secrets are present).
+2. The Supabase migration workflow will attempt to run migrations if `SUPABASE_*` secrets are present.
+
+If you prefer Vercel's native Git integration (recommended), connect the GitHub repository in the Vercel dashboard and set the same environment variables in the Vercel project settings instead of using the `VERCEL_*` Action secrets.
